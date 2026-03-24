@@ -1,0 +1,30 @@
+# 🔐 Environment variables
+.env
+
+# 🐍 Python cache
+__pycache__/
+*.py[cod]
+
+# 🧪 Virtual environments
+venv/
+.venv/
+
+# 📦 Build files
+dist/
+build/
+*.egg-info/
+
+# ⚙️ Tooling
+.python-version
+uv.lock
+
+# 🖥️ OS files
+.DS_Store
+Thumbs.db
+
+# 🧑‍💻 Editor
+.vscode/
+.idea/
+
+# 🔥 Logs
+*.log
