@@ -8,7 +8,7 @@ def get_imagekit_client():
 
 def _get_watermark_transformation(username: str):
     return (
-        "l-text,",
+        "l-text,",      #documentation
         f"i-{username},",
         "lfo-bottom_left,",
         "lx-10,ly-10,",

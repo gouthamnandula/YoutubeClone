@@ -66,7 +66,7 @@ class VideoLike(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ["user", "video"]
+        unique_together = ["user", "video"] #prevent duplicate likes
 
     def __str__(self):
         action = "liked" if self.value == self.LIKE else "disliked"
