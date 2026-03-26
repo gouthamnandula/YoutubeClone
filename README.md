@@ -2,88 +2,50 @@
 
 A Django-based YouTube-style video platform where users can register, upload videos, browse channels, watch adaptive streams, and react with likes or dislikes.
 
-![Project Preview](docs/screenshots/home-feed.png)
+> **Stack:** Python 3.13 · Django 6 · SQLite · ImageKit · Vanilla JS
 
-This project focuses on the core creator/viewer experience:
-
-- User registration, login, and logout
-- Video upload with optional custom thumbnail
-- Public home feed and creator channel pages
-- Video detail pages with streaming playback
-- Like and dislike voting per user
-- View counting and owner-only delete actions
-- ImageKit-powered media upload, optimization, and thumbnail generation
-
-## Tech Stack
-
-- Python 3.13
-- Django 6
-- SQLite for local development
-- ImageKit for video storage and delivery
-- Vanilla HTML, CSS, and JavaScript on the frontend
-- `python-dotenv` for environment variable loading
+---
 
 ## Features
 
-### Viewer experience
+### Viewer Experience
+- Browse the latest uploaded videos from the home feed
+- Watch videos via HLS stream (with an optimised fallback URL)
+- Like or dislike videos — one vote per authenticated user
 
-- Browse the latest uploaded videos from the home page
-- Open a dedicated video page with title, description, stats, and creator info
-- Watch videos through an HLS stream when supported, with an optimized fallback URL
-- Like or dislike a video with one vote stored per authenticated user
+### Creator Experience
+- Register an account and sign in
+- Upload videos up to **100 MB** (MP4, WebM, MOV, AVI)
+- Optionally provide a custom thumbnail, or get one auto-generated
+- View all your uploads on a personal channel page
+- Delete your own videos
 
-### Creator experience
+### Media Handling
+- Video files and thumbnails are stored and delivered via **ImageKit**
+- Thumbnails include a username watermark transformation
+- Playback uses ImageKit transformations for optimisation and streaming
 
-- Create an account and sign in
-- Upload videos up to 100 MB
-- Accept supported formats: MP4, WebM, MOV, and AVI
-- Optionally upload a custom thumbnail during video upload
-- Get automatically generated thumbnails when a custom one is not provided
-- See all uploads on a creator channel page
-- Delete your own uploaded videos
-
-### Media handling
-
-- Video files are uploaded to ImageKit
-- Thumbnail URLs are generated dynamically
-- Thumbnail images include a simple username watermark transformation
-- Video playback uses ImageKit transformations for optimization and streaming
-
-## Screenshots
-
-### Home Feed
-
-![Home Feed](docs/screenshots/home-feed.png)
-
-### Video Player
-
-![Video Player](docs/screenshots/video-player.png)
-
-### Upload Flow
-
-![Upload Flow](docs/screenshots/upload-flow.png)
-
-### Channel Page
-
-![Channel Page](docs/screenshots/channel-info.png)
+---
 
 ## Project Structure
 
-```text
-YoutubeClone/
-|-- pyproject.toml
-|-- README.md
-|-- docs/
-|   `-- screenshots/    # README preview images
-|-- youtube/
-|   |-- manage.py
-|   |-- db.sqlite3
-|   |-- youtube/        # project settings, urls, ASGI/WSGI
-|   |-- accounts/       # authentication views, forms, urls
-|   |-- videos/         # models, upload flow, playback, voting
-|   |-- templates/      # shared base template
-|   `-- static/         # global CSS and assets
 ```
+YoutubeClone/
+├── pyproject.toml
+├── README.md
+├── docs/
+│   └── screenshots/        # README preview images
+└── youtube/
+    ├── manage.py
+    ├── db.sqlite3
+    ├── youtube/            # project settings, urls, ASGI/WSGI
+    ├── accounts/           # authentication views, forms, urls
+    ├── videos/             # models, upload flow, playback, voting
+    ├── templates/          # shared base template
+    └── static/             # global CSS and assets
+```
+
+---
 
 ## Getting Started
 
@@ -96,18 +58,14 @@ cd YoutubeClone
 
 ### 2. Create and sync the environment
 
-Using `uv`:
-
 ```bash
 uv venv
 uv sync
 ```
 
-If you prefer `pip`, install the dependencies listed in `pyproject.toml` manually inside a virtual environment.
+Or install dependencies from `pyproject.toml` manually inside a virtualenv.
 
 ### 3. Create a `.env` file
-
-The project loads environment variables automatically with `python-dotenv`.
 
 ```env
 IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
@@ -116,12 +74,12 @@ IMAGE_KIT_BASE_URL=https://api.imagekit.io
 IMAGEKIT_WEBHOOK_SECRET=optional_webhook_secret
 ```
 
-Notes:
-
-- `IMAGEKIT_PUBLIC_KEY` is used during upload calls.
-- `IMAGEKIT_PRIVATE_KEY` is required by the ImageKit Python SDK.
-- `IMAGE_KIT_BASE_URL` is optional if you want to override the SDK default.
-- `IMAGEKIT_WEBHOOK_SECRET` is optional in the current app.
+| Variable | Required | Notes |
+|---|---|---|
+| `IMAGEKIT_PUBLIC_KEY` | ✅ | Used during upload calls |
+| `IMAGEKIT_PRIVATE_KEY` | ✅ | Required by the ImageKit Python SDK |
+| `IMAGE_KIT_BASE_URL` | Optional | Overrides the SDK default |
+| `IMAGEKIT_WEBHOOK_SECRET` | Optional | Not used in the current app |
 
 ### 4. Apply migrations
 
@@ -137,71 +95,60 @@ uv run python youtube/manage.py runserver
 
 Open `http://127.0.0.1:8000/` in your browser.
 
-## Main Routes
+---
 
-- `/` - home feed
-- `/upload/` - upload page for authenticated users
-- `/<video_id>` - video detail page
-- `/channel/<username>/` - creator channel page
-- `/accounts/register/` - sign up
-- `/accounts/login/` - sign in
+## Routes
 
-## Data Model
+| Path | Description |
+|---|---|
+| `/` | Home feed |
+| `/upload/` | Upload page (login required) |
+| `/<video_id>` | Video detail and playback |
+| `/channel/<username>/` | Creator channel page |
+| `/accounts/register/` | Sign up |
+| `/accounts/login/` | Sign in |
+
+---
+
+## Data Models
 
 ### `Video`
 
-Stores:
-
-- owner
-- title and description
-- ImageKit file ID
-- video URL and thumbnail URL
-- views, likes, dislikes
-- created and updated timestamps
+| Field | Type |
+|---|---|
+| `owner` | FK → User |
+| `title` | CharField |
+| `description` | TextField |
+| `imagekit_file_id` | CharField |
+| `video_url` | URLField |
+| `thumbnail_url` | URLField |
+| `views` / `likes` / `dislikes` | PositiveIntegerField |
+| `created_at` / `updated_at` | DateTimeField |
 
 ### `VideoLike`
 
-Stores one reaction per user per video:
+Stores one reaction per user per video (`+1` like, `-1` dislike). Enforces a unique `(user, video)` constraint to prevent duplicate votes.
 
-- `1` for like
-- `-1` for dislike
-
-The model enforces a unique `(user, video)` pair to prevent duplicate votes.
+---
 
 ## Development Notes
 
-- This repository is currently configured for local development.
-- The app uses SQLite and `DEBUG = True`.
-- Uploaded media is handled by ImageKit instead of local file storage.
-- Automated tests have not been implemented yet.
-
-## Commands
+- Configured for local development with `DEBUG = True` and SQLite
+- Media is handled by ImageKit — no local file storage needed
+- No automated tests yet; Django system checks pass with 0 tests
 
 ```bash
 uv run python youtube/manage.py check
 uv run python youtube/manage.py test
 ```
 
-At the moment, Django's system check passes and the test suite contains `0` tests.
+---
 
-## Screenshot Files
+## Roadmap
 
-The README now uses these files from `docs/screenshots/`:
-
-- `home-feed.png`
-- `video-player.png`
-- `upload-flow.png`
-- `channel-info.png`
-
-## Roadmap Ideas
-
-- Add comments and subscriptions
-- Improve search and filtering
-- Add playlists and watch history
-- Build a richer dashboard for creators
-- Add automated tests for upload, voting, and auth flows
-- Prepare production settings, media security, and deployment configuration
-
-## Why This Project Stands Out
-
-This is more than a static UI clone. It includes a working backend, authentication flow, database models, upload pipeline, adaptive streaming integration, and creator-specific actions. It is a strong foundation for turning a simple clone into a real video platform project.
+- [ ] Comments and subscriptions
+- [ ] Search and filtering
+- [ ] Playlists and watch history
+- [ ] Creator dashboard
+- [ ] Automated tests for upload, voting, and auth
+- [ ] Production settings and deployment configuration
