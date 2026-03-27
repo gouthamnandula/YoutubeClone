@@ -1,207 +1,186 @@
-# YouTube Clone
+<h1 align="center">🎬 YouTube Clone</h1>
 
-A Django-based YouTube-style video platform where users can register, upload videos, browse channels, watch adaptive streams, and react with likes or dislikes.
+<p align="center">
+  A full-stack Django-based video platform inspired by YouTube  
+</p>
 
-![Project Preview](docs/screenshots/home-feed.png)
+<p align="center">
+  <img src="docs/screenshots/home-feed.png" width="80%" />
+</p>
 
-This project focuses on the core creator/viewer experience:
+---
 
-- User registration, login, and logout
-- Video upload with optional custom thumbnail
-- Public home feed and creator channel pages
-- Video detail pages with streaming playback
-- Like and dislike voting per user
-- View counting and owner-only delete actions
-- ImageKit-powered media upload, optimization, and thumbnail generation
+## ✨ Features
 
-## Tech Stack
+### 👀 Viewer Experience
+- Browse latest uploaded videos
+- Watch videos with streaming playback (HLS supported)
+- Like / Dislike system (1 vote per user)
+- View counts & video stats
 
-- Python 3.13
-- Django 6
-- SQLite for local development
-- ImageKit for video storage and delivery
-- Vanilla HTML, CSS, and JavaScript on the frontend
-- `python-dotenv` for environment variable loading
+### 🎥 Creator Experience
+- User authentication (Register/Login)
+- Upload videos (MP4, WebM, MOV, AVI)
+- Optional custom thumbnails
+- Auto-generated thumbnails
+- Channel page for each creator
+- Delete own videos
 
-## Features
+### ⚡ Media Handling
+- ImageKit integration for storage & delivery
+- Optimized video streaming
+- Dynamic thumbnail generation
 
-### Viewer experience
+---
 
-- Browse the latest uploaded videos from the home page
-- Open a dedicated video page with title, description, stats, and creator info
-- Watch videos through an HLS stream when supported, with an optimized fallback URL
-- Like or dislike a video with one vote stored per authenticated user
+## 🛠️ Tech Stack
 
-### Creator experience
+- 🐍 Python 3.13
+- 🌐 Django 6
+- 🗄️ SQLite
+- ☁️ ImageKit (media storage)
+- 🎨 HTML, CSS, JavaScript
+- 🔐 python-dotenv
 
-- Create an account and sign in
-- Upload videos up to 100 MB
-- Accept supported formats: MP4, WebM, MOV, and AVI
-- Optionally upload a custom thumbnail during video upload
-- Get automatically generated thumbnails when a custom one is not provided
-- See all uploads on a creator channel page
-- Delete your own uploaded videos
+---
 
-### Media handling
+## 📸 Screenshots
 
-- Video files are uploaded to ImageKit
-- Thumbnail URLs are generated dynamically
-- Thumbnail images include a simple username watermark transformation
-- Video playback uses ImageKit transformations for optimization and streaming
+### 🏠 Home Feed
+<img src="docs/screenshots/home-feed.png" width="100%" />
 
-## Screenshots
+### ▶️ Video Player
+<img src="docs/screenshots/video-player.png" width="100%" />
 
-### Home Feed
+### ⬆️ Upload Flow
+<img src="docs/screenshots/upload-flow.png" width="100%" />
 
-![Home Feed](docs/screenshots/home-feed.png)
+### 👤 Channel Page
+<img src="docs/screenshots/channel-info.png" width="100%" />
 
-### Video Player
+---
 
-![Video Player](docs/screenshots/video-player.png)
+## 📁 Project Structure
 
-### Upload Flow
-
-![Upload Flow](docs/screenshots/upload-flow.png)
-
-### Channel Page
-
-![Channel Page](docs/screenshots/channel-info.png)
-
-## Project Structure
-
-```text
+```bash
 YoutubeClone/
-|-- pyproject.toml
-|-- README.md
-|-- docs/
-|   `-- screenshots/    # README preview images
-|-- youtube/
-|   |-- manage.py
-|   |-- db.sqlite3
-|   |-- youtube/        # project settings, urls, ASGI/WSGI
-|   |-- accounts/       # authentication views, forms, urls
-|   |-- videos/         # models, upload flow, playback, voting
-|   |-- templates/      # shared base template
-|   `-- static/         # global CSS and assets
+│── pyproject.toml
+│── README.md
+│── docs/
+│   └── screenshots/
+│── youtube/
+│   ├── manage.py
+│   ├── db.sqlite3
+│   ├── youtube/
+│   ├── accounts/
+│   ├── videos/
+│   ├── templates/
+│   └── static/
 ```
 
-## Getting Started
+---
 
-### 1. Clone the repository
+## ⚙️ Setup & Installation
 
+### 1️⃣ Clone the repo
 ```bash
 git clone <your-repo-url>
 cd YoutubeClone
 ```
 
-### 2. Create and sync the environment
-
-Using `uv`:
-
+### 2️⃣ Setup environment
 ```bash
 uv venv
 uv sync
 ```
 
-If you prefer `pip`, install the dependencies listed in `pyproject.toml` manually inside a virtual environment.
-
-### 3. Create a `.env` file
-
-The project loads environment variables automatically with `python-dotenv`.
-
+### 3️⃣ Create `.env`
 ```env
-IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
-IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+IMAGEKIT_PUBLIC_KEY=your_key
+IMAGEKIT_PRIVATE_KEY=your_key
 IMAGE_KIT_BASE_URL=https://api.imagekit.io
-IMAGEKIT_WEBHOOK_SECRET=optional_webhook_secret
 ```
 
-Notes:
-
-- `IMAGEKIT_PUBLIC_KEY` is used during upload calls.
-- `IMAGEKIT_PRIVATE_KEY` is required by the ImageKit Python SDK.
-- `IMAGE_KIT_BASE_URL` is optional if you want to override the SDK default.
-- `IMAGEKIT_WEBHOOK_SECRET` is optional in the current app.
-
-### 4. Apply migrations
-
+### 4️⃣ Run migrations
 ```bash
 uv run python youtube/manage.py migrate
 ```
 
-### 5. Start the development server
-
+### 5️⃣ Start server
 ```bash
 uv run python youtube/manage.py runserver
 ```
 
-Open `http://127.0.0.1:8000/` in your browser.
+👉 Open: http://127.0.0.1:8000/
 
-## Main Routes
+---
 
-- `/` - home feed
-- `/upload/` - upload page for authenticated users
-- `/<video_id>` - video detail page
-- `/channel/<username>/` - creator channel page
-- `/accounts/register/` - sign up
-- `/accounts/login/` - sign in
+## 🌐 Routes
 
-## Data Model
+| Route | Description |
+|------|------------|
+| `/` | Home Feed |
+| `/upload/` | Upload Video |
+| `/<video_id>` | Video Page |
+| `/channel/<username>/` | Channel Page |
+| `/accounts/login/` | Login |
+| `/accounts/register/` | Register |
 
-### `Video`
+---
 
-Stores:
+## 🧠 Data Models
 
-- owner
-- title and description
-- ImageKit file ID
-- video URL and thumbnail URL
-- views, likes, dislikes
-- created and updated timestamps
+### 🎬 Video
+- Title, Description  
+- Video URL & Thumbnail  
+- Views, Likes, Dislikes  
 
-### `VideoLike`
+### 👍 VideoLike
+- Stores user reactions  
+- `1 = Like`, `-1 = Dislike`  
+- Prevents duplicate votes  
 
-Stores one reaction per user per video:
+---
 
-- `1` for like
-- `-1` for dislike
+## 🚧 Roadmap
 
-The model enforces a unique `(user, video)` pair to prevent duplicate votes.
+- 💬 Comments system  
+- 🔔 Subscriptions  
+- 🔍 Search & filtering  
+- 📜 Watch history  
+- 📊 Creator dashboard  
+- 🧪 Automated testing  
 
-## Development Notes
+---
 
-- This repository is currently configured for local development.
-- The app uses SQLite and `DEBUG = True`.
-- Uploaded media is handled by ImageKit instead of local file storage.
-- Automated tests have not been implemented yet.
+## 💡 Why This Project?
 
-## Commands
+This is not just a UI clone.
 
-```bash
-uv run python youtube/manage.py check
-uv run python youtube/manage.py test
-```
+It includes:
+- Full backend logic  
+- Authentication system  
+- Media upload pipeline  
+- Streaming integration  
 
-At the moment, Django's system check passes and the test suite contains `0` tests.
+👉 A solid real-world full-stack project 💪
 
-## Screenshot Files
+---
 
-The README now uses these files from `docs/screenshots/`:
+## 🤝 Contributing
 
-- `home-feed.png`
-- `video-player.png`
-- `upload-flow.png`
-- `channel-info.png`
+Feel free to fork, improve, and submit PRs 🚀
 
-## Roadmap Ideas
+---
 
-- Add comments and subscriptions
-- Improve search and filtering
-- Add playlists and watch history
-- Build a richer dashboard for creators
-- Add automated tests for upload, voting, and auth flows
-- Prepare production settings, media security, and deployment configuration
+## ⭐ Show Some Love
 
-## Why This Project Stands Out
+If you like this project:
 
-This is more than a static UI clone. It includes a working backend, authentication flow, database models, upload pipeline, adaptive streaming integration, and creator-specific actions. It is a strong foundation for turning a simple clone into a real video platform project.
+- ⭐ Star the repo  
+- 🍴 Fork it  
+- 📢 Share it  
+
+---
+
+<p align="center">Made with ❤️ by Goutham</p>
